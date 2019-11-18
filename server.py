@@ -28,17 +28,18 @@ class EchoHandler(socketserver.DatagramRequestHandler):
                     self.wfile.write(request)
                 else:
                     if method == 'INVITE':
-                        request = (b'SIP/2.0 100\r\n\r\n')
-                        request = (request + b'Trying SIP/2.0 180 Ringing\r\n\r\n')
+                        request = (b'SIP/2.0 100 Trying \r\n\r\n')
+                        request = (request + b'SIP/2.0 180 Ringing\r\n\r\n')
                         request = (request + b'SIP/2.0 200 OK\r\n\r\n')
                         self.wfile.write(request)
                     elif method == 'BYE':
                         request = (b"SIP/2.0 200 OK\r\n\r\n")
                         self.wfile.write(request)
+                    elif method == 'ACK':
+                        print('rtp')
                     else:
                         request = (b"SIP/2.0 405 Method Not Allowed\r\n\r\n")
                         self.wfile.write(request)
-
 
 
 if __name__ == "__main__":
