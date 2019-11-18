@@ -20,17 +20,26 @@ class EchoHandler(socketserver.DatagramRequestHandler):
             if message_client != '\r\n':
                 parametros_client = ''.join(message_client).split()
                 method = parametros_client[0]
-                if method == 'INVITE':
-                    request = (b'SIP/2.0 100\r\n\r\n')
-                    request = (request + b'Trying SIP/2.0 180 Ringing\r\n\r\n')
-                    request = (request + b'SIP/2.0 200 OK\r\n\r\n')
-                    self.wfile.write(request)
-                elif method == 'BYE':
-                    request = (b"SIP/2.0 200 OK\r\n\r\n")
+                others = parametros_client[1:]
+                sip = others[0].split(':')[0]
+                version = others[1]
+                if sip != 'sip' or version != 'SIP/2.0':
+                    request = (b"SIP/2.0 400 Bad Request\r\n\r\n")
                     self.wfile.write(request)
                 else:
-                    request = (b"SIP/2.0 405 Method Not Allowed\r\n\r\n")
-                    self.wfile.write(request)
+                    if method == 'INVITE':
+                        request = (b'SIP/2.0 100\r\n\r\n')
+                        request = (request + b'Trying SIP/2.0 180 Ringing\r\n\r\n')
+                        request = (request + b'SIP/2.0 200 OK\r\n\r\n')
+                        self.wfile.write(request)
+                    elif method == 'BYE':
+                        request = (b"SIP/2.0 200 OK\r\n\r\n")
+                        self.wfile.write(request)
+                    else:
+                        request = (b"SIP/2.0 405 Method Not Allowed\r\n\r\n")
+                        self.wfile.write(request)
+
+
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
