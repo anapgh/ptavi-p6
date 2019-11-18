@@ -15,15 +15,22 @@ class EchoHandler(socketserver.DatagramRequestHandler):
 
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
-        self.wfile.write(b"Hemos recibido tu peticion")
-        while 1:
-            # Leyendo línea a línea lo que nos envía el cliente
-            line = self.rfile.read()
-            print("El cliente nos manda " + line.decode('utf-8'))
-
-            # Si no hay más líneas salimos del bucle infinito
-            if not line:
-                break
+        for line in self.rfile:
+            message_client = line.decode('utf-8')
+            if message_client != '\r\n':
+                parametros_client = ''.join(message_client).split()
+                method = parametros_client[0]
+                if method == 'INVITE':
+                    request = (b'SIP/2.0 100\r\n\r\n')
+                    request = (request + b'Trying SIP/2.0 180 Ringing\r\n\r\n')
+                    request = (request + b'SIP/2.0 200 OK\r\n\r\n')
+                    self.wfile.write(request)
+                elif method == 'BYE':
+                    request = (b"SIP/2.0 200 OK\r\n\r\n")
+                    self.wfile.write(request)
+                else:
+                    request = (b"SIP/2.0 405 Method Not Allowed\r\n\r\n")
+                    self.wfile.write(request)
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
@@ -35,7 +42,7 @@ if __name__ == "__main__":
     except (IndexError, ValueError):
         sys.exit('Usage: python3 server.py IP port audio_file')
 
-    print("Lanzando servidor UDP de eco...")
+    print("Listening...")
     try:
         serv.serve_forever()
     except KeyboardInterrupt:
