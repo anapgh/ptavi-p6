@@ -41,6 +41,7 @@ class EchoHandler(socketserver.DatagramRequestHandler):
                         aEjecutar = './mp32rtp -i 127.0.0.1 -p 23032 <' + audio_file
                         print("Vamos a ejecutar", aEjecutar)
                         os.system(aEjecutar)
+                        continue
                     else:
                         request = (b"SIP/2.0 405 Method Not Allowed\r\n\r\n")
                         self.wfile.write(request)
