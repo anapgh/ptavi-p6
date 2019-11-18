@@ -17,10 +17,10 @@ try:
     user = login[0]
     ip, port = server
 except (IndexError, ValueError):
-    sys.exit('Usage: python3 client.py method receiver@IP:SIPport')
+    print('Usage: python3 client.py method receiver@IP:SIPport')
 
 if METHOD == 'INVITE' or 'BYE':
-    SIP = (METHOD + ' sip:' + user + '@' + ip + 'SIP/2.0')
+    SIP = (METHOD + ' sip:' + user + '@' + ip + ' SIP/2.0')
 else:
     SIP = METHOD
 
@@ -31,4 +31,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
 
     my_socket.send(bytes(SIP , 'utf-8') + b'\r\n\r\n')
     data = my_socket.recv(1024)
-    print(data.decode('utf-8'))
+    request = data.decode('utf-8')
+    if METHOD == 'INVITE':
+        request = request.split('\r\n\r\n')[2]
+        if request == 'SIP/2.0 200 OK':
+            SIP = ('ACK' + ' sip:' + user + '@' + ip + ' SIP/2.0')
+            my_socket.send(bytes(SIP , 'utf-8') + b'\r\n\r\n')
