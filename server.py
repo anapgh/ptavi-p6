@@ -18,6 +18,7 @@ class EchoHandler(socketserver.DatagramRequestHandler):
         # Escribe dirección y puerto del cliente (de tupla client_address)
         for line in self.rfile:
             message_client = line.decode('utf-8')
+            print("El cliente nos manda " + message_client)
             if message_client != '\r\n':
                 parametros_client = ''.join(message_client).split()
                 method = parametros_client[0]
