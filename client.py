@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-"""Programa cliente que abre un socket a un servidor"""
+"""Programa cliente que abre un socket a un servidor."""
 
 import socket
 import sys
@@ -22,7 +22,7 @@ if METHOD == 'INVITE' or 'BYE':
 else:
     LINE = METHOD
 
-""" Creamos el socket, lo configuramos y lo atamos a un servidor/puerto"""
+""" Creamos el socket, lo configuramos y lo atamos a un servidor/puerto."""
 
 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -31,9 +31,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     my_socket.send(bytes(LINE, 'utf-8') + b'\r\n\r\n')
     data = my_socket.recv(1024)
     request = data.decode('utf-8')
-    print('Recibido -- ', request)
+    print(request)
 
-    """ Enviamos el mensaje ACK """
+    """ Enviamos el mensaje ACK. """
 
     if METHOD == 'INVITE':
         request = request.split('\r\n\r\n')[2]
