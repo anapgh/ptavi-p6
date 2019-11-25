@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-"""Clase para un servidor de eco en UDP simple"""
+"""Clase para un servidor de eco en UDP simple."""
 
 import socketserver
 import sys
@@ -8,13 +8,14 @@ import os
 
 
 class EchoHandler(socketserver.DatagramRequestHandler):
-    """Echo server class"""
+    """Echo server class."""
 
     def handle(self):
+        """handle method of the server class."""
         # Evalua el mensaje del cliente llegado, y manda la respuesta correcta
         for line in self.rfile:
             message_client = line.decode('utf-8')
-            print("El cliente nos manda " + message_client)
+            print(message_client)
             if message_client != '\r\n':
                 parametros_client = ''.join(message_client).split()
                 method = parametros_client[0]
@@ -44,7 +45,7 @@ class EchoHandler(socketserver.DatagramRequestHandler):
                         self.wfile.write(request)
 
 
-"""Programa principal para un servidor de eco en UDP simple"""
+"""Programa principal para un servidor de eco en UDP simple."""
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
